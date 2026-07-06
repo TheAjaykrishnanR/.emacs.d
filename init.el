@@ -36,6 +36,7 @@
 (tool-bar-mode -1)
 (menu-bar-mode -1)
 (scroll-bar-mode -1)
+(fringe-mode 0) ;; disable padding (otherwise you will notice a slight gap between text window and window border
 (setq inhibit-startup-message t)
 (global-display-line-numbers-mode)
 (setq display-line-numbers-type 'relative)
@@ -64,3 +65,4 @@
 ;; PACKAGE MANAGERS
 
 ;; THEMES
+(load-theme `tango-dark)
