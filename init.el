@@ -18,7 +18,6 @@
   (interactive)
   (transpose-lines 1)
   (forward-line -2))
-
 ;;;;;; Move line down
 (defun move-line-down ()
   "Move the current line down."
@@ -26,11 +25,9 @@
   (forward-line 1)
   (transpose-lines 1)
   (forward-line -1))
-
 ;;;;;; Bind to Ctrl+j and Ctrl+k in normal mode
 (define-key evil-normal-state-map (kbd "C-j") 'move-line-down)
 (define-key evil-normal-state-map (kbd "C-k") 'move-line-up)
-
 ;;;;;; Move to the first non blank character
 (define-key evil-normal-state-map (kbd "H") 'evil-first-non-blank)
 
@@ -42,6 +39,8 @@
 (setq inhibit-startup-message t)
 (global-display-line-numbers-mode)
 (setq display-line-numbers-type 'relative)
+(setq ring-bell-function `ignore) ;; disable the annoying bell sound
+(setq visible-bell nil)
 ;;;; FONT
 (set-face-attribute 'default nil :font "JetBrains Mono" :height 140)
 ;;;; Tabs
