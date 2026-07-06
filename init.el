@@ -1,0 +1,67 @@
+;; EVIL-MODE
+;;;; I just git clone https://github.com/emacs-evil/evil into packages/evil
+(add-to-list `load-path "~/.emacs.d/packages")
+(add-to-list `load-path "~/.emacs.d/packages/evil")
+;;;; Enable
+(require `evil)
+(evil-mode 1)
+;;;; evil mode in minibuffer
+(setq evil-want-minibuffer t)
+
+;; CUSTOM KEYBINDS
+;;;; SHELL COMMAND
+(global-set-key (kbd "C-c C-c") 'shell-command)
+;;;; EVIL VIM
+;;;;;; Move line up
+(defun move-line-up ()
+  "Move the current line up."
+  (interactive)
+  (transpose-lines 1)
+  (forward-line -2))
+
+;;;;;; Move line down
+(defun move-line-down ()
+  "Move the current line down."
+  (interactive)
+  (forward-line 1)
+  (transpose-lines 1)
+  (forward-line -1))
+
+;;;;;; Bind to Ctrl+j and Ctrl+k in normal mode
+(define-key evil-normal-state-map (kbd "C-j") 'move-line-down)
+(define-key evil-normal-state-map (kbd "C-k") 'move-line-up)
+
+;;;;;; Move to the first non blank character
+(define-key evil-normal-state-map (kbd "H") 'evil-first-non-blank)
+
+;; UI
+;;;; CORE
+(tool-bar-mode -1)
+(menu-bar-mode -1)
+(scroll-bar-mode -1)
+(setq inhibit-startup-message t)
+(global-display-line-numbers-mode)
+(setq display-line-numbers-type 'relative)
+;;;; FONT
+(set-face-attribute 'default nil :font "JetBrains Mono" :height 140)
+;;;; Tabs
+(setq-default indent-tabs-mode t)
+(setq-default tab-width 4)
+(define-key evil-insert-state-map (kbd "TAB") 'tab-to-tab-stop)
+(setq backward-delete-char-untabify-method nil)
+
+;; CHANGE SHELL (PWSH)
+(let* ((pwsh-dir (expand-file-name "packages/pwsh/" user-emacs-directory))
+       (pwsh-bat (expand-file-name "pwsh.bat" pwsh-dir))
+       (pwsh-exe (executable-find "pwsh")))
+  
+  (when (and pwsh-exe (file-exists-p pwsh-bat))
+    (setq shell-file-name pwsh-bat)
+    (setq shell-command-switch "-Command")
+    (setq explicit-shell-file-name pwsh-exe)
+    (setq explicit-pwsh-args '("-NoProfile" "-Interactive"))
+    (setq explicit-pwsh.exe-args '("-NoProfile" "-Interactive"))))
+
+;; PACKAGE MANAGERS
+
+;; THEMES
