@@ -10,7 +10,13 @@
 
 ;; CUSTOM KEYBINDS
 ;;;; SHELL COMMAND
-(global-set-key (kbd "C-c C-c") 'shell-command)
+;;;; old: (global-set-key (kbd "C-c C-c") 'shell-command)
+;;;; new method works in any mode that tries to steal
+(defvar shell-minor-mode-map (make-sparse-keymap))
+(define-key shell-minor-mode-map (kbd "C-c C-c") 'shell-command)
+(define-minor-mode shell-minor-mode 
+  "A minor mode to override other keybindings."
+  t " shell-minor-mode" 'shell-minor-mode-map)
 ;;;; EVIL VIM
 ;;;;;; Move line up
 (defun move-line-up ()
