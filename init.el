@@ -10,10 +10,10 @@
 
 ;; CUSTOM KEYBINDS
 ;;;; SHELL COMMAND
-;;;; old: (global-set-key (kbd "C-c C-c") 'shell-command)
+;;;; old: (global-set-key (kbd "C-c C-s") 'shell-command)
 ;;;; new method works in any mode that tries to steal
 (defvar shell-minor-mode-map (make-sparse-keymap))
-(define-key shell-minor-mode-map (kbd "C-c C-c") 'shell-command)
+(define-key shell-minor-mode-map (kbd "C-c C-s") 'shell-command)
 (define-minor-mode shell-minor-mode 
   "A minor mode to override other keybindings."
   t " shell-minor-mode" 'shell-minor-mode-map)
@@ -48,6 +48,7 @@
 (setq display-line-numbers-type 'relative)
 (setq ring-bell-function `ignore) ;; disable the annoying bell sound
 (setq visible-bell nil)
+(set-frame-parameter nil 'undecorated t) ;; remove window title bar
 ;;;; FONT
 (set-face-attribute 'default nil :font "JetBrains Mono" :height 140)
 ;;;; Tabs
