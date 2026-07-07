@@ -67,6 +67,10 @@
 ;;(load-theme `modus-vivendi) 
 
 ;; PACKAGES (WITH OR WITHOUT DOWNLODING)
+;;;; custom.el
+(setq custom-file (locate-user-emacs-file "custom.el"))
+(load custom-file t)
+
 ;;;; VERTICO
 ;;;; vertical suggestions in M-x and other menus
 (use-package vertico
@@ -92,17 +96,5 @@
 (use-package orderless
   :ensure t
   :config
-  (setq completion-styles `(orderless basic))) 
-
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages '(marginalia orderless vertico)))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
+  (setq completion-styles `(orderless basic))
+  (setq completion-category-defaults nil))
