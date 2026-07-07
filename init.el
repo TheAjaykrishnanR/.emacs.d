@@ -67,7 +67,7 @@
 ;;(load-theme `modus-vivendi) 
 
 ;; PACKAGES (WITH OR WITHOUT DOWNLODING)
-;;;; custom.el
+;;;; custom.el: to save the state in a different file
 (setq custom-file (locate-user-emacs-file "custom.el"))
 (load custom-file t)
 
