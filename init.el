@@ -62,7 +62,47 @@
     (setq explicit-pwsh-args '("-NoProfile" "-Interactive"))
     (setq explicit-pwsh.exe-args '("-NoProfile" "-Interactive"))))
 
-;; PACKAGE MANAGERS
-
 ;; THEMES
 (load-theme `tango-dark)
+;;(load-theme `modus-vivendi) 
+
+;; PACKAGES (WITH OR WITHOUT DOWNLODING)
+;;;; VERTICO
+;;;; vertical suggestions in M-x and other menus
+(use-package vertico
+  :ensure t ;; ensure that package is installed if not download and install it
+  :config ;; write lisp code after this line to configure your package
+  (vertico-mode 1))
+
+;;;; MARGINALIA
+(use-package marginalia
+  :ensure t
+  :config
+  (marginalia-mode 1))
+
+;;;; SAVEHIST
+;;;; savehist for saving minibuffer history across restarts
+(use-package savehist
+  :ensure nil ;; since this is a default package already in emacs dont ensure it
+  :config
+  (savehist-mode 1))
+
+;;;; ORDERLESS
+;;;; for searching for commands without knowing the exact order
+(use-package orderless
+  :ensure t
+  :config
+  (setq completion-styles `(orderless basic))) 
+
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages '(marginalia orderless vertico)))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
