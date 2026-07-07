@@ -162,11 +162,11 @@
    ("M-<f5>" . modus-themes-load-random))
   :config
   ;; All customisations here.
-  (setq modus-themes-mixed-fonts t)
-  (setq modus-themes-italic-constructs t)
+  (setq modus-themes-mixed-fonts nil)
+  (setq modus-themes-italic-constructs nil) 
 
   ;; Finally, load your theme of choice (or a random one with
   ;; `modus-themes-load-random', `modus-themes-load-random-dark',
   ;; `modus-themes-load-random-light').
   ;; (modus-themes-load-theme 'ef-cyprus)) ;; -> beautiful light theme (green)
-  (modus-themes-load-theme 'ef-dark))
+  (modus-themes-load-theme 'ef-dream)) 
