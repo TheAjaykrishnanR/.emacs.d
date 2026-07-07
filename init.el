@@ -121,8 +121,22 @@
   :hook (csharp-mode . lsp-deferred)
   :config
   (setq lsp-csharp-server-type 'csharp-ls))
+;;;; LSP-UI
+;;;; The package part of lsp-mode that assists in the ui features of the lsp such as
+;;;; peeks, definitions etc
 (use-package lsp-ui
-  :ensure t)
+  :ensure t
+  :commands lsp-ui-mode
+  :hook (lsp-mode . lsp-ui-mode)
+  :config
+  (setq lsp-ui-peek-enable t)
+  (setq lsp-ui-doc-enable t)
+  (setq lsp-ui-doc-show-with-cursor t)
+  (setq lsp-ui-doc-delay 1)
+  (setq lsp-ui-doc-position 'at-point) ;; Shows at your cursor
+  (setq lsp-ui-doc-max-width 60)
+  (setq lsp-ui-doc-header t)
+  (setq lsp-ui-doc-include-signature t))
 
 ;; THEMES
 ;;;; INBUILT
@@ -154,4 +168,5 @@
   ;; Finally, load your theme of choice (or a random one with
   ;; `modus-themes-load-random', `modus-themes-load-random-dark',
   ;; `modus-themes-load-random-light').
-  (modus-themes-load-theme 'ef-cyprus))
+  ;; (modus-themes-load-theme 'ef-cyprus)) ;; -> beautiful light theme (green)
+  (modus-themes-load-theme 'ef-dark))
