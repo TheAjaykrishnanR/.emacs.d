@@ -3,5 +3,7 @@
 *~*
 *#*
 elpa/
+eshell/
 history
 custom.el
+.lsp-session*
