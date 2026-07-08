@@ -19,6 +19,7 @@
 ;; CUSTOM KEYBINDS
 ;;;; SHELL COMMAND
 ;;;; old: (global-set-key (kbd "C-c C-s") 'shell-command)
+;;;; git config --global help.format man, if you dont want the browser to open help pages as emacs runs git --help "subcommand" while
 ;;;; new method works in any mode that tries to steal
 (defvar shell-minor-mode-map (make-sparse-keymap))
 (define-key shell-minor-mode-map (kbd "C-c C-s") 'shell-command)
