@@ -40,7 +40,7 @@
 ;;;;;; Move to the first non blank character
 (define-key evil-normal-state-map (kbd "H") 'evil-first-non-blank)
 ;;;;;; g-l to goto last line
-(define-key evil-motion-state-map (kbd "g l") 'evil-jump-backward))
+(define-key evil-motion-state-map (kbd "g l") 'evil-jump-backward)
 
 ;; UI
 ;;;; CORE
@@ -186,5 +186,7 @@
 ;;  ;; (load-theme 'nordic-night t))
 
 ;;;; MONO THEMES
-;;(add-to-list 'load-path "~/.emacs.d/packages/themes/mono")
-;;(load-theme 'almost-mono-white t)
+(add-to-list 'load-path "~/.emacs.d/packages/themes/mono")
+(require 'almost-mono-themes)
+(almost-mono-themes--define-theme white)
+(load-theme 'almost-mono-black t)
