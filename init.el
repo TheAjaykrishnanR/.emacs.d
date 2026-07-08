@@ -117,9 +117,6 @@
   :config
   (company-mode 1))
 (add-hook 'after-init-hook 'global-company-mode)
-;;;; LIBVTERM
-(use-package vterm
-  :ensure t)
 
 ;; LSP
 ;; C# lsp server based on csharp-ls (https://github.com/razzmatazz/csharp-language-server)
