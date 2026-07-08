@@ -7,6 +7,9 @@
 (evil-mode 1)
 ;;;; evil mode in minibuffer
 (setq evil-want-minibuffer t)
+;;;; set evil mode in *help*
+(with-eval-after-load 'evil
+  (evil-set-initial-state 'help-mode 'normal))
 
 ;; CUSTOM KEYBINDS
 ;;;; SHELL COMMAND
@@ -36,6 +39,8 @@
 (define-key evil-normal-state-map (kbd "C-k") 'move-line-up)
 ;;;;;; Move to the first non blank character
 (define-key evil-normal-state-map (kbd "H") 'evil-first-non-blank)
+;;;;;; g-l to goto last line
+(define-key evil-motion-state-map (kbd "g l") 'evil-jump-backward))
 
 ;; UI
 ;;;; CORE
@@ -50,7 +55,8 @@
 (setq visible-bell nil)
 (set-frame-parameter nil 'undecorated t) ;; remove window title bar
 ;;;; FONT
-(set-face-attribute 'default nil :font "JetBrains Mono" :height 140)
+;;;; (set-face-attribute 'default nil :font "JetBrains Mono" :height 120 :weight 'normal) ;; DEFAULT
+(set-face-attribute 'default nil :font "Iosevka Comfy" :height 130 :weight 'normal) ;; narrower than JetBrains and looks very nice
 ;;;; Tabs
 (setq-default indent-tabs-mode t)
 (setq-default tab-width 4)
@@ -61,39 +67,37 @@
 (let* ((pwsh-dir (expand-file-name "packages/pwsh/" user-emacs-directory))
        (pwsh-bat (expand-file-name "pwsh.bat" pwsh-dir))
        (pwsh-exe (executable-find "pwsh")))
-  
   (when (and pwsh-exe (file-exists-p pwsh-bat))
     (setq shell-file-name pwsh-bat)
     (setq shell-command-switch "-Command")
     (setq explicit-shell-file-name pwsh-exe)
-    (setq explicit-pwsh-args '("-NoProfile" "-Interactive"))
-    (setq explicit-pwsh.exe-args '("-NoProfile" "-Interactive"))))
+    (setq explicit-pwsh-args '("-NoProfile" "-Interactive")) ;; C-c C-s shell-command
+    (setq explicit-pwsh.exe-args '("-Interactive")))) ;; M-x shell
 
-;; PACKAGES (WITH OR WITHOUT DOWNLODING)
+;; MELPA PACKAGE MANAGER
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+
+;; SECONDARY PACKAGES (WITH OR WITHOUT DOWNLODING)
 ;;;; custom.el: to save the state in a different file
 (setq custom-file (locate-user-emacs-file "custom.el"))
 (load custom-file t)
-
 ;;;; VERTICO
 ;;;; vertical suggestions in M-x and other menus
 (use-package vertico
   :ensure t ;; ensure that package is installed if not download and install it
   :config ;; write lisp code after this line to configure your package
   (vertico-mode 1))
-
 ;;;; MARGINALIA
 (use-package marginalia
   :ensure t
   :config
   (marginalia-mode 1))
-
 ;;;; SAVEHIST
 ;;;; savehist for saving minibuffer history across restarts
 (use-package savehist
   :ensure nil ;; since this is a default package already in emacs dont ensure it
   :config
   (savehist-mode 1))
-
 ;;;; ORDERLESS
 ;;;; for searching for commands without knowing the exact order
 (use-package orderless
@@ -101,7 +105,6 @@
   :config
   (setq completion-styles `(orderless basic))
   (setq completion-category-defaults nil))
-
 ;;;; COMPANY MODE
 ;;;; Provides the UI for LSP autocomplete etc...
 (use-package company
@@ -109,9 +112,9 @@
   :config
   (company-mode 1))
 (add-hook 'after-init-hook 'global-company-mode)
-
-;; MELPA PACKAGE MANAGER
-(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+;;;; LIBVTERM
+(use-package vterm
+  :ensure t)
 
 ;; LSP
 ;; C# lsp server based on csharp-ls (https://github.com/razzmatazz/csharp-language-server)
@@ -169,4 +172,19 @@
   ;; `modus-themes-load-random', `modus-themes-load-random-dark',
   ;; `modus-themes-load-random-light').
   ;; (modus-themes-load-theme 'ef-cyprus)) ;; -> beautiful light theme (green)
-  (modus-themes-load-theme 'ef-dream)) 
+  ;; (modus-themes-load-theme 'ef-deuteranopia-light)) ;;
+  ;; (modus-themes-load-theme 'ef-dream))
+  (modus-themes-load-theme 'ef-owl))
+
+;;;; NORDIC LIGHT
+;;;; (Really nice dark theme with pale sky blue accent)
+;;(use-package nordic-night-theme
+;;  :ensure t
+;;  :config
+;;  ;; Use this for the darker version
+;;  (load-theme 'nordic-midnight t))
+;;  ;; (load-theme 'nordic-night t))
+
+;;;; MONO THEMES
+;;(add-to-list 'load-path "~/.emacs.d/packages/themes/mono")
+;;(load-theme 'almost-mono-white t)
