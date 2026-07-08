@@ -11,6 +11,11 @@
 (with-eval-after-load 'evil
   (evil-set-initial-state 'help-mode 'normal))
 
+;; EAT
+;; (TERMINAL EMULATOR)
+(add-to-list 'load-path "~/.emacs.d/packages/eat")
+(require 'eat)
+
 ;; CUSTOM KEYBINDS
 ;;;; SHELL COMMAND
 ;;;; old: (global-set-key (kbd "C-c C-s") 'shell-command)
