@@ -26,6 +26,36 @@
 (define-minor-mode shell-minor-mode 
   "A minor mode to override other keybindings."
   t " shell-minor-mode" 'shell-minor-mode-map)
+;;;; EAT SPIN/SPAWN NEW TERMINALS
+;;;; OLD-------------------------
+;;;;(defun my-eat-new-session ()
+;;;;  "Always spawn a brand new eat session."
+;;;;  (interactive)
+;;;;  (when (get-buffer "*eat*")
+;;;;    (with-current-buffer "*eat*"
+;;;;      (rename-uniquely)))
+;;;;  (eat))
+;;;;(global-set-key (kbd "C-c t") 'my-eat-new-session)
+;;;; NEW-------------------------BELOW
+(defun eat-make2 (name program &optional startfile &rest switches)
+  (let ((buffer (get-buffer-create name)))
+    (when (not (let ((proc (get-buffer-process buffer)))
+                 (and proc (memq (process-status proc)
+                                 '(run stop open listen connect)))))
+      (with-current-buffer buffer
+        (eat-mode))
+      (eat-exec buffer name program startfile switches))
+    buffer))
+(defun spawn-new-eat-terminal ()
+  (interactive)
+  (let (input)
+	(setq input (read-string "Enter terminal name: " ""))
+	(let (buffer-name)
+	  (if (string= input "")
+		(setq buffer-name (generate-new-buffer-name "*eat*"))
+		(setq buffer-name (generate-new-buffer-name (concat "*eat-" input "*"))))
+	  (switch-to-buffer (eat-make2 buffer-name "pwsh.exe")))))
+(global-set-key (kbd "C-c t") 'spawn-new-eat-terminal)
 ;;;; EVIL VIM
 ;;;;;; Move line up
 (defun move-line-up ()
