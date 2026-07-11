@@ -12,8 +12,10 @@
 ;;;; evil mode in minibuffer
 (setq evil-want-minibuffer t)
 
-;;;; set evil mode in *help*
+;;;; set evil mode in some of the basic buffers
 (evil-set-initial-state 'help-mode 'normal)
+(evil-set-initial-state 'debugger-mode 'normal)
+(evil-set-initial-state 'messages-buffer-mode 'normal)
 
 ;; EAT (TERMINAL EMULATOR)
 ;; -----------------------
