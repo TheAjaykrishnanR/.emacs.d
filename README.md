@@ -1,4 +1,4 @@
-# ~\.emacs.d for Windows
+# .emacs.d for Windows
 
 - Config folder (Windows): $HOME\AppData\Roaming\.emacs.d
 - Config file: ~\.emacs.d\init.el
