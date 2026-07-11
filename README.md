@@ -29,4 +29,4 @@
 
 - Mono dark
 
-### Font: `Iosevka Comfu`
+### Font: `Iosevka Comfy`
