@@ -274,15 +274,15 @@
 
 ;;;; NORDIC LIGHT
 ;;;; (Really nice dark theme with pale sky blue accent)
-;;(use-package nordic-night-theme
-;;  :ensure t
-;;  :config
-;;  ;; Use this for the darker version
-;;  (load-theme 'nordic-midnight t))
-;;  ;; (load-theme 'nordic-night t))
+(use-package nordic-night-theme
+  :ensure t
+  :config
+  ;; Use this for the darker version
+  (load-theme 'nordic-midnight t))
+  ;; (load-theme 'nordic-night t))
 
 ;;;; MONO THEMES
-(add-to-list 'load-path "~/.emacs.d/packages/themes/mono")
-(require 'almost-mono-themes)
-(almost-mono-themes--define-theme white)
-(load-theme 'almost-mono-black t)
+;;;; (add-to-list 'load-path "~/.emacs.d/packages/themes/mono")
+;;;; (require 'almost-mono-themes)
+;;;; (almost-mono-themes--define-theme white)
+;;;; (load-theme 'almost-mono-black t)
