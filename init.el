@@ -54,9 +54,10 @@
                  (and proc (memq (process-status proc)
                                  '(run stop open listen connect)))))
       (with-current-buffer buffer
-        (eat-mode))
-      (eat-exec buffer name program startfile switches))
-    buffer))
+        (eat-mode)
+		(pop-to-buffer-same-window buffer)
+		(eat-exec buffer name program startfile switches))
+    buffer)))
 (defun spawn-new-eat-terminal ()
   (interactive)
   (let (input)
@@ -65,7 +66,7 @@
 	  (if (string= input "")
 		(setq buffer-name (generate-new-buffer-name "*eat*"))
 		(setq buffer-name (generate-new-buffer-name (concat "*eat-" input "*"))))
-	  (switch-to-buffer (eat-make2 buffer-name "pwsh.exe")))))
+	  (eat-make2 buffer-name "pwsh.exe"))))
 
 (define-key globally-overriding-minor-mode-map (kbd "C-x t") 'spawn-new-eat-terminal)
 
