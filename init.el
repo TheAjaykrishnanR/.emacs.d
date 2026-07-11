@@ -1,42 +1,51 @@
 ;; EVIL-MODE
+;; ---------
+
 ;;;; I just git clone https://github.com/emacs-evil/evil into packages/evil
 (add-to-list `load-path "~/.emacs.d/packages")
 (add-to-list `load-path "~/.emacs.d/packages/evil")
+
 ;;;; Enable
 (require `evil)
 (evil-mode 1)
+
 ;;;; evil mode in minibuffer
 (setq evil-want-minibuffer t)
-;;;; set evil mode in *help*
-(with-eval-after-load 'evil
-  (evil-set-initial-state 'help-mode 'normal))
 
-;; EAT
-;; (TERMINAL EMULATOR)
+;;;; set evil mode in *help*
+(evil-set-initial-state 'help-mode 'normal)
+
+;; EAT (TERMINAL EMULATOR)
+;; -----------------------
+
 (add-to-list 'load-path "~/.emacs.d/packages/eat")
 (require 'eat)
 
 ;; CUSTOM KEYBINDS
+;; ---------------
+
+;;;; CUSTOM MINOR MODE for global keymaps
+;;;; Add keymaps you want to be globally available which would override any other modes, add them to this (global-overriding-minor-mode-map)
+(defvar globally-overriding-minor-mode-map (make-sparse-keymap))
+(define-minor-mode globally-overriding-minor-mode 
+  "A minor mode to override other keybindings."
+  :global t
+  :init-value nil
+  :keymap globally-overriding-minor-mode-map)
+
+;;;; OPEN init.el
+(defun open-initel ()
+  (interactive) ;; marking a function as interactive is necessary if it contains any user interaction (find-file does)
+  (find-file "~/.emacs.d/init.el"))
+(define-key globally-overriding-minor-mode-map (kbd "C-c i") 'open-initel)
+
 ;;;; SHELL COMMAND
 ;;;; old: (global-set-key (kbd "C-c C-s") 'shell-command)
 ;;;; git config --global help.format man, if you dont want the browser to open help pages as emacs runs git --help "subcommand" while
 ;;;; new method works in any mode that tries to steal
-(defvar shell-minor-mode-map (make-sparse-keymap))
-(define-key shell-minor-mode-map (kbd "C-c C-s") 'shell-command)
-(define-minor-mode shell-minor-mode 
-  "A minor mode to override other keybindings."
-  t " shell-minor-mode" 'shell-minor-mode-map)
+(define-key globally-overriding-minor-mode-map (kbd "C-c C-s") 'shell-command)
+
 ;;;; EAT SPIN/SPAWN NEW TERMINALS
-;;;; OLD-------------------------
-;;;;(defun my-eat-new-session ()
-;;;;  "Always spawn a brand new eat session."
-;;;;  (interactive)
-;;;;  (when (get-buffer "*eat*")
-;;;;    (with-current-buffer "*eat*"
-;;;;      (rename-uniquely)))
-;;;;  (eat))
-;;;;(global-set-key (kbd "C-c t") 'my-eat-new-session)
-;;;; NEW-------------------------BELOW
 (defun eat-make2 (name program &optional startfile &rest switches)
   (let ((buffer (get-buffer-create name)))
     (when (not (let ((proc (get-buffer-process buffer)))
@@ -55,7 +64,9 @@
 		(setq buffer-name (generate-new-buffer-name "*eat*"))
 		(setq buffer-name (generate-new-buffer-name (concat "*eat-" input "*"))))
 	  (switch-to-buffer (eat-make2 buffer-name "pwsh.exe")))))
-(global-set-key (kbd "C-c t") 'spawn-new-eat-terminal)
+
+(define-key globally-overriding-minor-mode-map (kbd "C-c t") 'spawn-new-eat-terminal)
+
 ;;;; EVIL VIM
 ;;;;;; Move line up
 (defun move-line-up ()
@@ -63,6 +74,7 @@
   (interactive)
   (transpose-lines 1)
   (forward-line -2))
+
 ;;;;;; Move line down
 (defun move-line-down ()
   "Move the current line down."
@@ -70,15 +82,32 @@
   (forward-line 1)
   (transpose-lines 1)
   (forward-line -1))
+
 ;;;;;; Bind to Ctrl+j and Ctrl+k in normal mode
 (define-key evil-normal-state-map (kbd "C-j") 'move-line-down)
 (define-key evil-normal-state-map (kbd "C-k") 'move-line-up)
+
 ;;;;;; Move to the first non blank character
 (define-key evil-normal-state-map (kbd "H") 'evil-first-non-blank)
+
 ;;;;;; g-l to goto last line
 (define-key evil-motion-state-map (kbd "g l") 'evil-jump-backward)
 
+;;;; UI
+(defun toggle-titlebar ()
+  (interactive)
+  (if (null (frame-parameter nil 'undecorated))
+	  (set-frame-parameter nil 'undecorated t)
+	(set-frame-parameter nil 'undecorated nil)))
+
+(define-key globally-overriding-minor-mode-map (kbd "C-c u") 'toggle-titlebar)
+
+;;;; Enable the global minor mode once every keymap has been added to it.
+(globally-overriding-minor-mode 1)
+
 ;; UI
+;; --
+
 ;;;; CORE
 (tool-bar-mode -1)
 (menu-bar-mode -1)
@@ -87,12 +116,14 @@
 (setq inhibit-startup-message t)
 (global-display-line-numbers-mode)
 (setq display-line-numbers-type 'relative)
-(setq ring-bell-function `ignore) ;; disable the annoying bell sound
+(setq ring-bell-function 'ignore) ;; disable the annoying bell sound
 (setq visible-bell nil)
 (set-frame-parameter nil 'undecorated t) ;; remove window title bar
+
 ;;;; FONT
 ;;;; (set-face-attribute 'default nil :font "JetBrains Mono" :height 120 :weight 'normal) ;; DEFAULT
 (set-face-attribute 'default nil :font "Iosevka Comfy" :height 130 :weight 'normal) ;; narrower than JetBrains and looks very nice
+
 ;;;; Tabs
 (setq-default indent-tabs-mode t)
 (setq-default tab-width 4)
@@ -100,6 +131,8 @@
 (setq backward-delete-char-untabify-method nil)
 
 ;; CHANGE SHELL (PWSH)
+;; -------------------
+
 (let* ((pwsh-dir (expand-file-name "packages/pwsh/" user-emacs-directory))
        (pwsh-bat (expand-file-name "pwsh.bat" pwsh-dir))
        (pwsh-exe (executable-find "pwsh")))
@@ -111,29 +144,37 @@
     (setq explicit-pwsh.exe-args '("-Interactive")))) ;; M-x shell
 
 ;; MELPA PACKAGE MANAGER
+;; ---------------------
+
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 
 ;; SECONDARY PACKAGES (WITH OR WITHOUT DOWNLODING)
+;; -----------------------------------------------
+
 ;;;; custom.el: to save the state in a different file
 (setq custom-file (locate-user-emacs-file "custom.el"))
 (load custom-file t)
+
 ;;;; VERTICO
 ;;;; vertical suggestions in M-x and other menus
 (use-package vertico
   :ensure t ;; ensure that package is installed if not download and install it
   :config ;; write lisp code after this line to configure your package
   (vertico-mode 1))
+
 ;;;; MARGINALIA
 (use-package marginalia
   :ensure t
   :config
   (marginalia-mode 1))
+
 ;;;; SAVEHIST
 ;;;; savehist for saving minibuffer history across restarts
 (use-package savehist
   :ensure nil ;; since this is a default package already in emacs dont ensure it
   :config
   (savehist-mode 1))
+
 ;;;; ORDERLESS
 ;;;; for searching for commands without knowing the exact order
 (use-package orderless
@@ -141,6 +182,7 @@
   :config
   (setq completion-styles `(orderless basic))
   (setq completion-category-defaults nil))
+
 ;;;; COMPANY MODE
 ;;;; Provides the UI for LSP autocomplete etc...
 (use-package company
@@ -150,6 +192,8 @@
 (add-hook 'after-init-hook 'global-company-mode)
 
 ;; LSP
+;; ---
+
 ;; C# lsp server based on csharp-ls (https://github.com/razzmatazz/csharp-language-server)
 (use-package lsp-mode
   :ensure t
@@ -157,6 +201,7 @@
   :hook (csharp-mode . lsp-deferred)
   :config
   (setq lsp-csharp-server-type 'csharp-ls))
+
 ;;;; LSP-UI
 ;;;; The package part of lsp-mode that assists in the ui features of the lsp such as
 ;;;; peeks, definitions etc
@@ -175,6 +220,8 @@
   (setq lsp-ui-doc-include-signature t))
 
 ;; THEMES
+;; ------
+
 ;;;; INBUILT
 ;;;; (load-theme `tango-dark)
 ;;;; (load-theme `modus-vivendi)
