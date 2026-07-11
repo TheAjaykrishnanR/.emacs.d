@@ -39,7 +39,7 @@
 (defun open-initel ()
   (interactive) ;; marking a function as interactive is necessary if it contains any user interaction (find-file does)
   (find-file "~/.emacs.d/init.el"))
-(define-key globally-overriding-minor-mode-map (kbd "C-c i") 'open-initel)
+(define-key globally-overriding-minor-mode-map (kbd "C-x i") 'open-initel)
 
 ;;;; SHELL COMMAND
 ;;;; old: (global-set-key (kbd "C-c C-s") 'shell-command)
@@ -67,7 +67,7 @@
 		(setq buffer-name (generate-new-buffer-name (concat "*eat-" input "*"))))
 	  (switch-to-buffer (eat-make2 buffer-name "pwsh.exe")))))
 
-(define-key globally-overriding-minor-mode-map (kbd "C-c t") 'spawn-new-eat-terminal)
+(define-key globally-overriding-minor-mode-map (kbd "C-x t") 'spawn-new-eat-terminal)
 
 ;;;; EVIL VIM
 ;;;;;; Move line up
@@ -102,8 +102,15 @@
 	  (set-frame-parameter nil 'undecorated t)
 	(set-frame-parameter nil 'undecorated nil)))
 
-(define-key globally-overriding-minor-mode-map (kbd "C-c u") 'toggle-titlebar)
+(define-key globally-overriding-minor-mode-map (kbd "C-x u") 'toggle-titlebar)
 
+;;;; other-window
+(define-key globally-overriding-minor-mode-map (kbd "M-o") 'other-window)
+
+;;;; delete-other-windows
+(define-key globally-overriding-minor-mode-map (kbd "C-x o") 'delete-other-windows)
+
+;;;; IMPORTANT !!!
 ;;;; Enable the global minor mode once every keymap has been added to it.
 (globally-overriding-minor-mode 1)
 
