@@ -110,6 +110,12 @@
 ;;;; delete-other-windows
 (define-key globally-overriding-minor-mode-map (kbd "C-x o") 'delete-other-windows)
 
+;;;; open dired in the home directory (real home not emacs ~)
+(defun open-dired-in-home ()
+  (interactive)
+  (dired "~/../../"))
+(define-key globally-overriding-minor-mode-map (kbd "C-x C-d") 'open-dired-in-home)
+
 ;;;; IMPORTANT !!!
 ;;;; Enable the global minor mode once every keymap has been added to it.
 (globally-overriding-minor-mode 1)
