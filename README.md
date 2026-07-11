@@ -13,9 +13,20 @@
 
 - `C-c t` spawns a new eat terminal
 - `C-c C-s` shell command
+- `C-c u` toggle titlebar
 
 ### Evil
 
 - `C-j`, `C-k` movie lines down and up
 - `H` move to first character in line
 - `gl` goto last location
+
+## UI
+
+- minimal ui (disabled titlebar, welcome message, menu bars etc)
+
+### Themes
+
+- Mono dark
+
+### Font: `Iosevka Comfu`
