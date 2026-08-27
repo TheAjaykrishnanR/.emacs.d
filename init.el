@@ -39,7 +39,7 @@
 (defun open-initel ()
   (interactive) ;; marking a function as interactive is necessary if it contains any user interaction (find-file does)
   (find-file "~/.emacs.d/init.el"))
-(define-key globally-overriding-minor-mode-map (kbd "C-x i") 'open-initel)
+(define-key globally-overriding-minor-mode-map (kbd "C-x C-i") 'open-initel)
 
 ;;;; SHELL COMMAND
 ;;;; old: (global-set-key (kbd "C-c C-s") 'shell-command)
@@ -48,27 +48,50 @@
 (define-key globally-overriding-minor-mode-map (kbd "C-c C-s") 'shell-command)
 
 ;;;; EAT SPIN/SPAWN NEW TERMINALS
-(defun eat-make2 (name program &optional startfile &rest switches)
-  (let ((buffer (get-buffer-create name)))
-    (when (not (let ((proc (get-buffer-process buffer)))
-                 (and proc (memq (process-status proc)
-                                 '(run stop open listen connect)))))
-      (with-current-buffer buffer
+(defun eat-make-new (name program &optional below startfile &rest switches)
+  "Create and switch to an Eat buffer named NAME running PROGRAM.
+If BELOW is non-nil, split the current window below and focus the new window.
+Otherwise, display in the current window."
+  (let* ((working-dir default-directory)
+         (buffer (get-buffer-create name)))
+    ;; Ensure default-directory is carried over to the new buffer
+    (with-current-buffer buffer
+      (setq default-directory working-dir))
+    
+    ;; Split below or reuse current window
+    (if below
+        (select-window (split-window-below))
+      (pop-to-buffer-same-window buffer))
+    
+    (with-current-buffer buffer
+      (when (not (let ((proc (get-buffer-process buffer)))
+                   (and proc (memq (process-status proc)
+                                   '(run stop open listen connect)))))
         (eat-mode)
-		(pop-to-buffer-same-window buffer)
-		(eat-exec buffer name program startfile switches))
-    buffer)))
-(defun spawn-new-eat-terminal ()
+        (eat-exec buffer name program startfile switches)))
+    
+    (switch-to-buffer buffer)
+    buffer))
+(defun spawn-new-eat-terminal (&optional below)
+  "Prompt for terminal NAME and launch pwsh.exe.
+When called interactively with a prefix argument (\\[universal-argument]),
+or when BELOW is non-nil, split and open the terminal in a window below."
+  (interactive "P")
+  (let* ((input (read-string "Enter terminal name: " ""))
+         (base-name (if (string-empty-p (string-trim input))
+                        "*eat*"
+                      (format "*eat-%s*" input)))
+         (buffer-name (generate-new-buffer-name base-name)))
+    (eat-make-new buffer-name "pwsh.exe" (or below current-prefix-arg))))
+
+;;;;;; Wrapper to always split below
+(defun spawn-new-eat-terminal-below ()
+  "Spawn a new Eat terminal in a window below."
   (interactive)
-  (let (input)
-	(setq input (read-string "Enter terminal name: " ""))
-	(let (buffer-name)
-	  (if (string= input "")
-		(setq buffer-name (generate-new-buffer-name "*eat*"))
-		(setq buffer-name (generate-new-buffer-name (concat "*eat-" input "*"))))
-	  (eat-make2 buffer-name "pwsh.exe"))))
+  (spawn-new-eat-terminal t))
 
 (define-key globally-overriding-minor-mode-map (kbd "C-x t") 'spawn-new-eat-terminal)
+(define-key globally-overriding-minor-mode-map (kbd "C-x C-t") 'spawn-new-eat-terminal-below)
 
 ;;;; EVIL VIM
 ;;;;;; Move line up
@@ -115,10 +138,48 @@
 (defun open-dired-in-home ()
   (interactive)
   (dired "~/../../"))
-(define-key globally-overriding-minor-mode-map (kbd "C-x C-d") 'open-dired-in-home)
+
+;;;; open dired below
+(defun open-dired-below ()
+  "Open Dired in the current directory in a window below and focus it."
+  (interactive)
+  (let ((dir (if buffer-file-name
+                 (file-name-directory buffer-file-name)
+               "~/../../")))
+    (select-window (split-window-below))
+    (dired dir)))
+
+(define-key globally-overriding-minor-mode-map (kbd "C-x d") 'open-dired-in-home)
+(define-key globally-overriding-minor-mode-map (kbd "C-x C-d") 'open-dired-below)
 
 ;;;; compile command
 (define-key globally-overriding-minor-mode-map (kbd "C-c C-o") 'compile)
+
+;;;; close bottom most window
+(defun close-bottom-most-window ()
+  "Find and delete the bottom-most window on the frame.
+If the cursor is inside the bottom window, moves focus to the window above first."
+  (interactive)
+  (if (one-window-p)
+      (message "Only one window on screen.")
+    (let ((bottom-win nil)
+          (max-bottom -1))
+      ;; Geometrically find the window with the lowest bottom coordinate
+      (dolist (w (window-list nil 'no-minibuf))
+        (let ((bottom (nth 3 (window-edges w))))
+          (when (> bottom max-bottom)
+            (setq max-bottom bottom)
+            (setq bottom-win w))))
+      
+      (when bottom-win
+        ;; If we are currently inside the bottom window, move focus up first
+        (when (eq (selected-window) bottom-win)
+          (let ((above (window-in-direction 'above)))
+            (when above (select-window above))))
+        ;; Delete the bottom window
+        (delete-window bottom-win)))))
+
+(define-key globally-overriding-minor-mode-map (kbd "C-x p") 'close-bottom-most-window)
 
 ;;;; IMPORTANT !!!
 ;;;; Enable the global minor mode once every keymap has been added to it.
