@@ -117,9 +117,16 @@
   (dired "~/../../"))
 (define-key globally-overriding-minor-mode-map (kbd "C-x C-d") 'open-dired-in-home)
 
+;;;; compile command
+(define-key globally-overriding-minor-mode-map (kbd "C-c C-c") 'compile)
+
 ;;;; IMPORTANT !!!
 ;;;; Enable the global minor mode once every keymap has been added to it.
 (globally-overriding-minor-mode 1)
+
+;; CONFIG
+;; ------
+(setq make-backup-files nil) ;; stop creating ~ files
 
 ;; UI
 ;; --
@@ -134,7 +141,7 @@
 (setq display-line-numbers-type 'relative)
 (setq ring-bell-function 'ignore) ;; disable the annoying bell sound
 (setq visible-bell nil)
-(set-frame-parameter nil 'undecorated t) ;; remove window title bar
+;;;; (set-frame-parameter nil 'undecorated t) ;; remove window title bar
 
 ;;;; FONT
 ;;;; (set-face-attribute 'default nil :font "JetBrains Mono" :height 120 :weight 'normal) ;; DEFAULT
