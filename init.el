@@ -118,7 +118,7 @@
 (define-key globally-overriding-minor-mode-map (kbd "C-x C-d") 'open-dired-in-home)
 
 ;;;; compile command
-(define-key globally-overriding-minor-mode-map (kbd "C-c C-c") 'compile)
+(define-key globally-overriding-minor-mode-map (kbd "C-c C-o") 'compile)
 
 ;;;; IMPORTANT !!!
 ;;;; Enable the global minor mode once every keymap has been added to it.
